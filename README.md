@@ -9,7 +9,6 @@ light weight thread safe / realtime safe logger that uses syslog utility
 ```cpp
 
 #include "system_logger/Logger.h"
-#include <cmath>
 
 using namespace system_logger;
 LoggingSession::instance().initialize("My Application");
