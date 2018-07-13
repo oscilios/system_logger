@@ -1,9 +1,10 @@
 set (target system_logger)
 set (headers
+    ${CMAKE_SOURCE_DIR}/include/system_logger/Allocator.h
+    ${CMAKE_SOURCE_DIR}/include/system_logger/Basicogger.h
     ${CMAKE_SOURCE_DIR}/include/system_logger/LoggingSession.h
     ${CMAKE_SOURCE_DIR}/include/system_logger/Logger.h
     ${CMAKE_SOURCE_DIR}/include/system_logger/StringRingBuffer.h
-    ${CMAKE_SOURCE_DIR}/include/system_logger/Allocator.h
     )
 set (sources
     LoggingSession.cpp

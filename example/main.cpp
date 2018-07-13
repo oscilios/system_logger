@@ -16,7 +16,7 @@ int main()
     LoggingSession::instance().initialize("system_logger_example");
     LoggingSession::instance().setLogLevel(LogLevel::Debug);
     RtLogger logger("main");
-    logger.setLogLevel(LogLevel::Error);
+    logger.setLogLevel(LogLevel::Warning);
 
     std::vector<std::thread> threads;
     std::atomic<bool> done{false};
@@ -24,56 +24,56 @@ int main()
     threads.emplace_back([&]() {
         while (!done)
         {
-            logger(LogLevel::Emergency, "this is Emergency", 0);
+            SYSLOG_EMERGENCY(logger, "================ this is Emergency", 0, " ================");
             std::this_thread::sleep_for(rnd_us());
         }
     });
     threads.emplace_back([&]() {
         while (!done)
         {
-            logger(LogLevel::Alert, "this is Alert", 1, rnd_us().count());
+            SYSLOG_ALERT(logger, "================ this is Alert", 1, rnd_us().count(), " ================");
             std::this_thread::sleep_for(rnd_us());
         }
     });
     threads.emplace_back([&]() {
         while (!done)
         {
-            logger(LogLevel::Critical, "this is Critical", 2, rnd_us().count());
+            SYSLOG_CRITICAL(logger, "================ this is Critical", 2, rnd_us().count(), " ================");
             std::this_thread::sleep_for(rnd_us());
         }
     });
     threads.emplace_back([&]() {
         while (!done)
         {
-            logger(LogLevel::Error, "this is Error", 3, rnd_us().count());
+            SYSLOG_ERROR(logger, "================ this is Error", 3, rnd_us().count(), " ================");
             std::this_thread::sleep_for(rnd_us());
         }
     });
     threads.emplace_back([&]() {
         while (!done)
         {
-            logger(LogLevel::Warning, "this is Warning", 4, rnd_us().count());
+            SYSLOG_WARNING(logger, "================ this is Warning", 4, rnd_us().count(), " ================");
             std::this_thread::sleep_for(rnd_us());
         }
     });
     threads.emplace_back([&]() {
         while (!done)
         {
-            logger(LogLevel::Notice, "this is Notice", 5, rnd_us().count());
+            SYSLOG_NOTICE(logger, "================ this is Notice", 5, rnd_us().count(), " ================");
             std::this_thread::sleep_for(rnd_us());
         }
     });
     threads.emplace_back([&]() {
         while (!done)
         {
-            logger(LogLevel::Info, "this is Info", 6, rnd_us().count());
+            SYSLOG_INFO(logger, "================ this is Info", 6, rnd_us().count(), " ================");
             std::this_thread::sleep_for(rnd_us());
         }
     });
     threads.emplace_back([&]() {
         while (!done)
         {
-            logger(LogLevel::Debug, "this is Debug", 7, rnd_us().count());
+            SYSLOG_DEBUG(logger, "this is Debug", 7, rnd_us().count(), " ================");
             std::this_thread::sleep_for(rnd_us());
         }
     });
