@@ -7,7 +7,7 @@
 
 namespace system_logger
 {
-    template <class CharT        = char,
+    template <class CharT        = char_type,
               class Traits       = std::char_traits<CharT>,
               typename Allocator = std::allocator<CharT>>
     class BasicLogger;
@@ -17,9 +17,9 @@ namespace system_logger
 
     using Logger = BasicLogger<>;
     using RtLogger =
-        BasicLogger<char,
-                    std::char_traits<char>,
-                    memory::AllocatorWithInternalMemory<char, kStringStreamMemoryPoolBytes>>;
+        BasicLogger<char_type,
+                    std::char_traits<char_type>,
+                    memory::AllocatorWithInternalMemory<char_type, kStringStreamMemoryPoolBytes>>;
 }
 
 template <typename T>
