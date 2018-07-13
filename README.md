@@ -4,7 +4,7 @@ light weight thread safe / realtime safe logger that uses syslog utility
 
 # example
 - use Logger if you don't mind allocating memory
-- use RtLogger if you care about allocating memory
+- use RtLogger if you care about memory allocations
 
 ```cpp
 
