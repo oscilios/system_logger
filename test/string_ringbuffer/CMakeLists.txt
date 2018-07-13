@@ -1,0 +1,5 @@
+set (target string_ringbuffer_test)
+add_executable (${target} main.cpp)
+target_link_libraries (${target} system_logger)
+add_test (NAME ${target} COMMAND ${target})
+unset (target)
