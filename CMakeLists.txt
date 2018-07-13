@@ -1,8 +1,9 @@
 cmake_minimum_required (VERSION  3.7.1)
-cmake_policy(SET CMP0048 NEW)
+cmake_policy (PUSH)
+cmake_policy (SET CMP0048 NEW)
+
 project (system_logger VERSION 0.1 LANGUAGES "CXX")
 include (CTest)
-include (ExternalProject)
 
 option (Enable_ASAN     "Enable Address Sanitizer" OFF)
 option (Enable_TSAN     "Enable Thread Sanitizer" OFF)
@@ -13,49 +14,40 @@ if (${CMAKE_BINARY_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
     message (FATAL_ERROR "Using source directory as build directory is not permitted")
 endif ()
 
-#########################################################
-# system flags
-#########################################################
-if (APPLE)
-    set (CMAKE_OSX_ARCHITECTURES x86_64)
-    set (CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD "c++1z")
-    set (CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY "libc++")
-endif ()
+add_compile_options (-Wall -Wextra -pedantic)
+add_compile_options (-msse3 -msse4.1 -mfpmath=sse)
 
 if (${CMAKE_CXX_COMPILER_ID} MATCHES Clang)
-    #add_compile_options (-fcolor-diagnostics) # force colored output
     add_compile_options (-std=c++1z)
     add_compile_options (-stdlib=libc++)
-    add_compile_options (-Wall -Wextra -pedantic  -Wnon-virtual-dtor -Weffc++ -Wno-unused-parameter)
+    add_compile_options (-Weffc++)
 elseif (${CMAKE_CXX_COMPILER_ID} MATCHES GNU)
     add_compile_options (-std=c++17)
-    add_compile_options (-Wall -Wextra -pedantic -Wno-unused-parameter -Wno-long-long -Wno-deprecated-declarations)
-endif ()
-
-if ("${CMAKE_BUILD_TYPE}" STREQUAL "Release")
-    add_compile_options (-msse3 -msse4.1 -mfpmath=sse)
 endif ()
 
 if (APPLE)
+    set (CMAKE_OSX_ARCHITECTURES x86_64)
     set (MACOSX_RPATH ON)
     set (CMAKE_MACOSX_RPATH ON)
     set (CMAKE_SKIP_BUILD_RPATH FALSE)
-    set (CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)   # set to true if rpaths should be set during build process
-    set (CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE) # set to true if rpaths should be set at install/bundle step
+    set (CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
+    set (CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 endif ()
 
 if (Enable_ASAN)
-    add_compile_options(-fsanitize=address -fsanitize-recover=address -fno-omit-frame-pointer)
+    add_compile_options (-fsanitize=address -fsanitize-recover=address -fno-omit-frame-pointer)
     set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=address -fsanitize-recover=address -fno-omit-frame-pointer")
 endif ()
 if (ENABLE_TSAN)
-    add_compile_options(-fsanitize=thread)
+    add_compile_options (-fsanitize=thread)
     set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=thread")
 endif ()
 
 set (CMAKE_SHARED_LINKER_FLAGS ${CMAKE_EXE_LINKER_FLAGS})
 
 if (XCODE)
+    set (CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD            "c++1z")
+    set (CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY                     "libc++")
     set (CMAKE_XCODE_ATTRIBUTE_GCC_WARN_ABOUT_RETURN_TYPE               "YES")
     set (CMAKE_XCODE_ATTRIBUTE_GCC_WARN_ABOUT_MISSING_NEWLINE           "YES")
     set (CMAKE_XCODE_ATTRIBUTE_GCC_WARN_UNUSED_VALUE                    "YES")
@@ -77,7 +69,6 @@ if (XCODE)
 endif ()
 
 
-include_directories (include)
 add_subdirectory (src)
 add_subdirectory (test)
 add_subdirectory (example)
@@ -99,7 +90,7 @@ if (EnableClangTidy)
         set (clang_tidy_line_filter_file ${CMAKE_SOURCE_DIR}/clang_tidy_line_filters.json)
         set (clang_tidy_checks "*,clang-diagnostic-*,clang-analyzer-*,dolby-*,-clang-analyzer-alpha*,-google-build-using-namespace,-llvm-header-guard,-llvm-include-order,-google-readability-namespace-comments,-google-runtime-references*,-llvm-namespace-comment,-google-explicit-constructor,-google-readability-braces-around-statements,-hicpp-*,-cppcoreguidelines-pro-bounds-pointer-arithmetic,-readability-braces-around-statements,-cppcoreguidelines-pro-bounds-constant-array-index,-cppcoreguidelines-pro-type-member-init,-readability-avoid-const-params-in-decls,-cppcoreguidelines-no-malloc,-cppcoreguidelines-pro-bounds-array-to-pointer-decay,-fuchsia-overloaded-operator,-fuchsia-default-arguments")
         #set (clang_tidy_checks "-checks=-*,clang-analyzer-*,-clang-analyzer-alpha*,readability-*,performance-*,modernize-*,cert-*,boost-*,misc-*,-misc-unconventional-assign-operator,cppcoreguidelines-*,dolby-*")
-        add_custom_target(clang_tidy ALL
+        add_custom_target (clang_tidy ALL
                           COMMAND echo ${CMAKE_SOURCE_DIR}/run_clang_tidy.py -checks=${clang_tidy_checks} -header-filter=^/${CMAKE_SOURCE_DIR}/src/.* -clang_options=${clang_tidy_opts}
                           COMMAND ${CMAKE_SOURCE_DIR}/run_clang_tidy.py -checks=${clang_tidy_checks} -header-filter=^${CMAKE_SOURCE_DIR}/src/.* -line_filter_file=${clang_tidy_line_filter_file} -clang_options=${clang_tidy_opts}
                           WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
@@ -107,4 +98,5 @@ if (EnableClangTidy)
                           )
     endif ()
 endif ()
+cmake_policy (POP)
 
