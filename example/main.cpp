@@ -1,5 +1,4 @@
 #include "system_logger/Logger.h"
-#include "system_logger/LoggingSession.h"
 #include <future>
 #include <iostream>
 
