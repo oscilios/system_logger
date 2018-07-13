@@ -12,42 +12,42 @@ namespace system_logger
                     memory::AllocatorWithInternalMemory<char_type, kStringStreamMemoryPoolBytes>>;
 
     template <typename LoggerT, typename... Args>
-    void SYSLOG_DEBUG(LoggerT& logger, Args... args)
+    void SYSLOG_DEBUG(LoggerT& logger, Args&&... args)
     {
         return logger(LogLevel::Debug, args...);
     }
     template <typename LoggerT, typename... Args>
-    void SYSLOG_INFO(LoggerT& logger, Args... args)
+    void SYSLOG_INFO(LoggerT& logger, Args&&... args)
     {
         return logger(LogLevel::Info, args...);
     }
     template <typename LoggerT, typename... Args>
-    void SYSLOG_NOTICE(LoggerT& logger, Args... args)
+    void SYSLOG_NOTICE(LoggerT& logger, Args&&... args)
     {
         return logger(LogLevel::Notice, args...);
     }
     template <typename LoggerT, typename... Args>
-    void SYSLOG_WARNING(LoggerT& logger, Args... args)
+    void SYSLOG_WARNING(LoggerT& logger, Args&&... args)
     {
         return logger(LogLevel::Warning, args...);
     }
     template <typename LoggerT, typename... Args>
-    void SYSLOG_ERROR(LoggerT& logger, Args... args)
+    void SYSLOG_ERROR(LoggerT& logger, Args&&... args)
     {
         return logger(LogLevel::Error, args...);
     }
     template <typename LoggerT, typename... Args>
-    void SYSLOG_CRITICAL(LoggerT& logger, Args... args)
+    void SYSLOG_CRITICAL(LoggerT& logger, Args&&... args)
     {
         return logger(LogLevel::Critical, args...);
     }
     template <typename LoggerT, typename... Args>
-    void SYSLOG_ALERT(LoggerT& logger, Args... args)
+    void SYSLOG_ALERT(LoggerT& logger, Args&&... args)
     {
         return logger(LogLevel::Alert, args...);
     }
     template <typename LoggerT, typename... Args>
-    void SYSLOG_EMERGENCY(LoggerT& logger, Args... args)
+    void SYSLOG_EMERGENCY(LoggerT& logger, Args&&... args)
     {
         return logger(LogLevel::Emergency, args...);
     }

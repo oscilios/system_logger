@@ -57,7 +57,7 @@ public:
         return m_loglevel;
     }
     template <typename... Ts>
-    void operator()(LogLevel level, const Ts&... args)
+    void operator()(LogLevel level, Ts&&... args)
     {
         static_assert(sizeof...(args) > 0, "No values to log");
 

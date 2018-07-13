@@ -37,7 +37,7 @@ int main()
         }
         for (auto& output : outputs)
         {
-            if (output.size() > 0 && std::find(outputs.begin(), outputs.end(), output) == outputs.end())
+            if (!output.empty() && std::find(outputs.begin(), outputs.end(), output) == outputs.end())
             {
                 std::cout << "FAILED: output " << output << " not found." << std::endl;
                 return -1;

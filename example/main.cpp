@@ -19,53 +19,54 @@ int main()
 
     std::vector<std::thread> threads;
     std::atomic<bool> done{false};
+    const auto lvalue = std::string("Hello world!");
 
     threads.emplace_back([&]() {
         while (!done)
         {
-            SYSLOG_EMERGENCY(logger, "================ this is Emergency", 0, " ================");
+            SYSLOG_EMERGENCY(logger, lvalue, "================ this is Emergency", 0, " ================");
             std::this_thread::sleep_for(rnd_us());
         }
     });
     threads.emplace_back([&]() {
         while (!done)
         {
-            SYSLOG_ALERT(logger, "================ this is Alert", 1, rnd_us().count(), " ================");
+            SYSLOG_ALERT(logger, lvalue, "================ this is Alert", 1, rnd_us().count(), " ================");
             std::this_thread::sleep_for(rnd_us());
         }
     });
     threads.emplace_back([&]() {
         while (!done)
         {
-            SYSLOG_CRITICAL(logger, "================ this is Critical", 2, rnd_us().count(), " ================");
+            SYSLOG_CRITICAL(logger, lvalue, "================ this is Critical", 2, rnd_us().count(), " ================");
             std::this_thread::sleep_for(rnd_us());
         }
     });
     threads.emplace_back([&]() {
         while (!done)
         {
-            SYSLOG_ERROR(logger, "================ this is Error", 3, rnd_us().count(), " ================");
+            SYSLOG_ERROR(logger, lvalue, "================ this is Error", 3, rnd_us().count(), " ================");
             std::this_thread::sleep_for(rnd_us());
         }
     });
     threads.emplace_back([&]() {
         while (!done)
         {
-            SYSLOG_WARNING(logger, "================ this is Warning", 4, rnd_us().count(), " ================");
+            SYSLOG_WARNING(logger, lvalue, "================ this is Warning", 4, rnd_us().count(), " ================");
             std::this_thread::sleep_for(rnd_us());
         }
     });
     threads.emplace_back([&]() {
         while (!done)
         {
-            SYSLOG_NOTICE(logger, "================ this is Notice", 5, rnd_us().count(), " ================");
+            SYSLOG_NOTICE(logger, lvalue, "================ this is Notice", 5, rnd_us().count(), " ================");
             std::this_thread::sleep_for(rnd_us());
         }
     });
     threads.emplace_back([&]() {
         while (!done)
         {
-            SYSLOG_INFO(logger, "================ this is Info", 6, rnd_us().count(), " ================");
+            SYSLOG_INFO(logger, lvalue, "================ this is Info", 6, rnd_us().count(), " ================");
             std::this_thread::sleep_for(rnd_us());
         }
     });
