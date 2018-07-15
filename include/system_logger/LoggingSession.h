@@ -58,7 +58,6 @@ class system_logger::LoggingSession final
 
     std::once_flag m_initFlag;
     static LogLevel m_loglevel;
-    static int m_syslogLevel;
     std::thread m_thread;
     threadsafe::Semaphore m_semaphore;
     StringBuffer m_stringbuffer;

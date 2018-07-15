@@ -5,8 +5,8 @@
 #include <syslog.h>
 
 using system_logger::LoggingSession;
-using system_logger::Option;
 using system_logger::LogLevel;
+using system_logger::Option;
 
 Option system_logger::operator|(Option lhs, Option rhs)
 {
@@ -23,7 +23,7 @@ namespace
 
     int computeMaxLogLevel(int loglevel)
     {
-        const int mask = setlogmask(LOG_UPTO(LOG_EMERG));
+        const int mask    = setlogmask(LOG_UPTO(LOG_EMERG));
         const int maxMask = (2 << loglevel) - 1;
         return computeLogLevelFromMask(mask | maxMask);
     }
@@ -52,13 +52,10 @@ namespace
         }
     }
 }
-
 #ifndef NDEBUG
 LogLevel LoggingSession::m_loglevel = LogLevel::Debug;
-int LoggingSession::m_syslogLevel = LOG_DEBUG;
 #else
 LogLevel LoggingSession::m_loglevel = LogLevel::Warning;
-int LoggingSession::m_syslogLevel = LOG_WARNING;
 #endif
 
 LoggingSession& LoggingSession::instance()
@@ -69,9 +66,8 @@ LoggingSession& LoggingSession::instance()
 void LoggingSession::initialize(const char* name, Option logopt)
 {
     std::call_once(m_initFlag, [this, &name, logopt]() {
-        m_syslogLevel = computeMaxLogLevel(translate(m_loglevel));
         openlog(name, static_cast<std::underlying_type<Option>::type>(logopt), LOG_DAEMON);
-        setlogmask(LOG_UPTO(m_syslogLevel));
+        setlogmask(LOG_UPTO(computeMaxLogLevel(translate(m_loglevel))));
         m_thread = std::thread(&LoggingSession::pop, this);
     });
 }
@@ -90,13 +86,12 @@ system_logger::LogLevel LoggingSession::getLogLevel() const
 void LoggingSession::setLogLevel(LogLevel level)
 {
     m_loglevel = level;
-    m_syslogLevel = translate(level);
-    setlogmask(LOG_UPTO(m_syslogLevel));
+    setlogmask(LOG_UPTO(translate(level)));
 }
 void LoggingSession::pop()
 {
     using StringAllocator = memory::Allocator<char_type, 1024>;
-    using String          = std::basic_string<char_type, std::char_traits<char_type>, StringAllocator>;
+    using String = std::basic_string<char_type, std::char_traits<char_type>, StringAllocator>;
     StringAllocator::memory_pool_type memory;
     StringAllocator allocator{memory};
     String s{allocator};
@@ -110,4 +105,3 @@ void LoggingSession::pop()
         }
     }
 }
-
