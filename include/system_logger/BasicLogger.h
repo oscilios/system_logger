@@ -31,7 +31,7 @@ struct system_logger::ApendSpace
 };
 
 template <class CharT, class Traits, typename AllocatorT>
-class system_logger::BasicLogger
+class system_logger::BasicLogger final
 {
     const std::string m_name;
     std::basic_ostringstream<CharT, Traits, AllocatorT> ss;
