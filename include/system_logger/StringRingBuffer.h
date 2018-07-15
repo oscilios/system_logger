@@ -32,7 +32,7 @@ class system_logger::threadsafe::StringRingBuffer final
     using String          = std::basic_string<CharT, std::char_traits<CharT>, StringAllocator>;
 
     std::atomic<int64_t> m_readIdx{0};
-    alignas(64) char m_padToAvoidFalseSharing1[64 - sizeof(size_t)];
+    alignas(64) char m_padToAvoidFalseSharing[64 - sizeof(int64_t)];
     std::atomic<int64_t> m_writeIdx{0};
     std::atomic<int64_t> m_written{0};
 
@@ -77,7 +77,7 @@ public:
             TMaxSize - 1)
         {
             // buffer is full
-            assert (false);
+            assert(false);
             return false;
         }
 
