@@ -83,5 +83,7 @@ int main()
     for (auto& t : threads)
         t.join();
 
+    SYSLOG_ERROR(logger, "========== DONE ===========");
+
     return 0;
 }

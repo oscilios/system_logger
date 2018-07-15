@@ -1,6 +1,7 @@
 #include "system_logger/LoggingSession.h"
 
 #include <cmath> // log
+#include <sstream>
 #include <syslog.h>
 
 using system_logger::LoggingSession;
@@ -76,6 +77,13 @@ void LoggingSession::initialize(const char* name, Option logopt)
 }
 LoggingSession::~LoggingSession()
 {
+    // push last string to flush. This string will never be logged
+    std::stringstream ss;
+    const auto level = static_cast<char>(LogLevel::Info);
+    ss << level << "LoggingSession finished";
+    push(ss.str());
+
+    // kill read thread
     m_done = true;
     m_semaphore.signal();
     if (m_thread.joinable())
