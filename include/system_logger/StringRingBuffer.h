@@ -31,7 +31,6 @@ class system_logger::threadsafe::StringRingBuffer final
     using StringAllocator = memory::Allocator<CharT, MemorySizeBytes>;
     using String          = std::basic_string<CharT, std::char_traits<CharT>, StringAllocator>;
 
-    constexpr static int64_t m_safety{1}; // minimum space between read/write indices
     std::atomic<int64_t> m_readIdx{0};
     alignas(64) char m_padToAvoidFalseSharing1[64 - sizeof(size_t)];
     std::atomic<int64_t> m_writeIdx{0};
@@ -60,7 +59,7 @@ public:
     bool read(std::basic_string<CharT, std::char_traits<CharT>, Alloc>& output) noexcept
     {
         auto rIdx = m_readIdx.load(std::memory_order_relaxed);
-        if (rIdx >= m_written.load(std::memory_order_acquire) - m_safety)
+        if (rIdx >= m_written.load(std::memory_order_acquire))
             return false;
 
         while (!m_readIdx.compare_exchange_weak(
@@ -75,7 +74,7 @@ public:
     bool write(const std::basic_string<CharT, std::char_traits<CharT>, Alloc>& input) noexcept
     {
         if (m_written.load(std::memory_order_relaxed) - m_readIdx.load(std::memory_order_acquire) >=
-            TMaxSize - m_safety)
+            TMaxSize - 1)
         {
             // buffer is full
             assert (false);
