@@ -31,7 +31,7 @@ class system_logger::threadsafe::StringRingBuffer final
     using StringAllocator = memory::Allocator<CharT, MemorySizeBytes>;
     using String          = std::basic_string<CharT, std::char_traits<CharT>, StringAllocator>;
 
-    constexpr static int64_t m_safety{1}; // read and write will always be spaced by this amount
+    constexpr static int64_t m_safety{1}; // minimum space between read/write indices
     std::atomic<int64_t> m_readIdx{0};
     alignas(64) char m_padToAvoidFalseSharing1[64 - sizeof(size_t)];
     std::atomic<int64_t> m_writeIdx{0};
