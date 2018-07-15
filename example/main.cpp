@@ -24,7 +24,7 @@ int main()
     threads.emplace_back([&]() {
         while (!done)
         {
-            SYSLOG_EMERGENCY(logger, lvalue, "================ this is Emergency", 0, " ================");
+            SYSLOG_EMERGENCY(logger, lvalue, "================ this is Emergency", 0, rnd_us().count(), " ================");
             std::this_thread::sleep_for(rnd_us());
         }
     });
@@ -73,7 +73,7 @@ int main()
     threads.emplace_back([&]() {
         while (!done)
         {
-            SYSLOG_DEBUG(logger, "this is Debug", 7, rnd_us().count(), " ================");
+            SYSLOG_DEBUG(logger, lvalue, "================ this is Debug", 7, rnd_us().count(), " ================");
             std::this_thread::sleep_for(rnd_us());
         }
     });
