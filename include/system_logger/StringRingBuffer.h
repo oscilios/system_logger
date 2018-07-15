@@ -78,6 +78,7 @@ public:
             TMaxSize - m_safety)
         {
             // buffer is full
+            assert (false);
             return false;
         }
 
