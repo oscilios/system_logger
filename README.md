@@ -15,7 +15,9 @@ using namespace system_logger;
 LoggingSession::instance().initialize("My Application");
 LoggingSession::instance().setLogLevel(LogLevel::Debug);
 RtLogger logger("main");
-logger.setLogLevel(LogLevel::Warning);
+logger.setLogLevel(LogLevel::Info);
+SYSLOG_DEBUG(logger, "Start"); // will not be logged because level is Info
 SYSLOG_INFO(logger, "Hello world!", 42, M_PI);
+SYSLOG_ERROR(logger, "An error occurred.");
 
 ```
