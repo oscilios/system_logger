@@ -33,8 +33,8 @@ class system_logger::threadsafe::StringRingBuffer final
     using String          = std::basic_string<CharT, std::char_traits<CharT>, StringAllocator>;
 
     std::atomic<bool> m_mutex{false};
-    std::atomic<size_t> m_readIdx{0};
-    std::atomic<size_t> m_writeIdx{0};
+    size_t m_readIdx{0};
+    size_t m_writeIdx{0};
 
     typename StringAllocator::memory_pool_type m_memory;
     StringAllocator m_allocator;
@@ -59,22 +59,20 @@ public:
     bool read(std::basic_string<CharT, std::char_traits<CharT>, Alloc>& output) noexcept
     {
         AtomicLock lk(m_mutex);
-        const size_t rIdx = m_readIdx.load(std::memory_order_relaxed);
-        if (rIdx >= m_writeIdx.load(std::memory_order_relaxed))
+        if (m_readIdx >= m_writeIdx)
             return false;
 
-        const auto& s = m_buffer[rIdx & m_bitmask];
+        const auto& s = m_buffer[m_readIdx & m_bitmask];
         output.assign(s.data(), s.length());
-        m_readIdx.fetch_add(1, std::memory_order_release);
+        m_readIdx++;
         return true;
     }
     template <typename Alloc>
     void write(const std::basic_string<CharT, std::char_traits<CharT>, Alloc>& input) noexcept
     {
         AtomicLock lk(m_mutex);
-        const size_t wIdx = m_writeIdx.load(std::memory_order_relaxed);
-        m_buffer[wIdx & m_bitmask].assign(input.data(), input.length());
-        m_writeIdx.fetch_add(1, std::memory_order_release);
+        m_buffer[m_writeIdx & m_bitmask].assign(input.data(), input.length());
+        m_writeIdx++;
     }
 };
 
